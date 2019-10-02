@@ -1,11 +1,10 @@
 <?php
+    include_once 'db.php';
+    $id = $_REQUEST['id'];
+    $page = $_REQUEST['page'];
 
-ob_start();
-session_start();
-require_once 'dbconnect.php';
-if(isset($_GET['delete'])){
-    $id=$_GET['delete'];
-    $conn->query("delete from article where id=$id") or die($conn>error());
-    header("Location: display.php");
-}
+    switch($page) {
+        case 'ngo':
+        break;
+    }
 ?>

@@ -1,112 +1,69 @@
 <?php
-ob_start();
 session_start();
-require_once 'dbconnect.php';
-if (isset($_SESSION['user'])) {
-    header("Location: index.php");
-    exit;
-}
+session_destroy();
+require_once 'db.php';
 
-if (isset($_POST['btn-login'])) {
-    $email = $_POST['email'];
-    $upass = $_POST['pass'];
-    $password = $upass;
-    $stmt = $conn->prepare("SELECT id, uname, password FROM donar WHERE uname= ?");
-    $stmt->bind_param("s", $email);
- 
-    $stmt->execute();
-
-    $res = $stmt->get_result();
-    $stmt->close();
-
-    $row = mysqli_fetch_array($res, MYSQLI_ASSOC);
-
-    $count = $res->num_rows;
-    if ($count == 1 && $row['password'] == $password) {
-        $_SESSION['user'] = $row['id'];
-        header("Location: index.php");
-    } elseif ($count == 1) {
-        $errMSG = "Bad password";
-    } else $errMSG = "User not found";
+if (isset($_REQUEST['user']) && isset($_REQUEST['password'])) {
+    $user_name = $_REQUEST['user'];
+    $password = $_REQUEST['password'];
+    $sql = "CALL checkLogin('$user_name', '$password');";
+    $result = mysqli_query($conn, $sql);
+    
+    if($result->num_rows > 0) {
+        $user = mysqli_fetch_array($result);
+        header("location: index.html");
+    } else {
+        $error = "Invalid Username or Password";
+    }
 }
 ?>
-
 <!DOCTYPE html>
+<html>
+
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Login</title>
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css" type="text/css"/>
-    <link rel="stylesheet" href="assets/css/style.css" type="text/css"/>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="assets/css/style.css" type="text/css" />
 </head>
+
 <body>
-
-<div class="container">
-
-
-    <div id="login-form">
-        <form method="post" autocomplete="off">
-
-            <div class="col-md-12">
-
-                <div class="form-group">
-                    <h2 class="">Login:</h2>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                <?php if(isset($error)){ ?>
+                <div class="alert alert-danger alert-dismissible">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <?php echo $error; ?>
                 </div>
-
-                <div class="form-group">
-                    <hr/>
-                </div>
-
-                <?php
-                if (isset($errMSG)) {
-
-                    ?>
-                    <div class="form-group">
-                        <div class="alert alert-danger">
-                            <span class="glyphicon glyphicon-info-sign"></span> <?php echo $errMSG; ?>
-                        </div>
-                    </div>
-                    <?php
-                }
-                ?>
-
-                <div class="form-group">
-                    <div class="input-group">
-                        <span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></span>
-                        <input type="email" name="email" class="form-control" placeholder="Email" required/>
+                <?php } ?>
+                <div class="panel panel-default">
+                    <div class="panel-heading">Login</div>
+                    <div class="panel-body">
+                        <form action="login.php" method="post">
+                            <div class="form-group">
+                                <label for="user">User Name</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                    <input type="email" name="user" class="form-control" id="user" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                    <input type="password" name="password" class="form-control" id="password" required>
+                                </div>
+                            </div>
+                            <input type="submit" class="btn btn-success btn-block" value="Login" />
+                        </form>
                     </div>
                 </div>
-
-                <div class="form-group">
-                    <div class="input-group">
-                        <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
-                        <input type="password" name="pass" class="form-control" placeholder="Password" required/>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <hr/>
-                </div>
-
-                <div class="form-group">
-                    <button type="submit" class="btn btn-block btn-primary" name="btn-login">Login</button>
-                </div>
-
-                <div class="form-group">
-                    <hr/>
-                </div>
-
-                <div class="form-group">
-                    <a href="register.php" type="button" class="btn btn-block btn-danger"
-                       name="btn-login">Register</a>
-                </div>
-
             </div>
-
-        </form>
+        </div>
     </div>
-
-</div>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-<script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
 </body>
+
 </html>
