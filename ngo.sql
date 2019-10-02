@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 02, 2019 at 01:40 PM
+-- Generation Time: Oct 02, 2019 at 03:36 PM
 -- Server version: 10.4.6-MariaDB
 -- PHP Version: 7.3.9
 
@@ -28,7 +28,7 @@ DELIMITER $$
 --
 CREATE DEFINER=`root`@`localhost` PROCEDURE `checkLogin` (IN `user_name` VARCHAR(50), IN `pass` VARCHAR(255))  READS SQL DATA
 BEGIN
-	SELECT `ngo`.`name` AS ngo_name, `users`.`admin_for` as ngo_id, `users`.`name` AS user_name, `users`.`is_admin` FROM `ngo` LEFT JOIN `users` ON `ngo`.`id` = `users`.`admin_for` WHERE `users`.`user_name` = user_name AND `users`.`password` = pass;
+	SELECT `ngo`.`name` AS ngo_name, `users`.`admin_for` as ngo_id, `users`.`name` AS user_name, `users`.`is_admin` FROM `ngo` JOIN `users` ON `ngo`.`id` = `users`.`admin_for` WHERE `users`.`user_name` = user_name AND `users`.`password` = pass;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getDonationRequestes` (IN `ngo_id` INT)  READS SQL DATA
@@ -68,6 +68,14 @@ CREATE TABLE `donation_request` (
   `status` varchar(10) NOT NULL DEFAULT 'PENDING'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `donation_request`
+--
+
+INSERT INTO `donation_request` (`id`, `user_id`, `ngo_id`, `goods`, `quantity`, `for_whom`, `status`) VALUES
+(1, 1, 1, 'tomato', 123, 'ALL', ''),
+(2, 1, 1, 'tomato', 123, 'ALL', 'PENDING');
+
 -- --------------------------------------------------------
 
 --
@@ -94,6 +102,13 @@ CREATE TABLE `ngo` (
   `description` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `ngo`
+--
+
+INSERT INTO `ngo` (`id`, `name`, `address`, `description`) VALUES
+(1, 'manav', 'pune 33', 'ngo for kids');
+
 -- --------------------------------------------------------
 
 --
@@ -103,11 +118,21 @@ CREATE TABLE `ngo` (
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `name` varchar(30) NOT NULL,
+  `address` varchar(50) DEFAULT NULL,
+  `contact` varchar(15) DEFAULT NULL,
   `user_name` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
   `is_admin` int(11) NOT NULL DEFAULT 0,
   `admin_for` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `name`, `address`, `contact`, `user_name`, `password`, `is_admin`, `admin_for`) VALUES
+(1, 'rahul mashere', '', '8412925599', 'rahulmashere3399@gmail.com', '12345', 0, NULL),
+(2, 'rahul mashere', 'pune38', '8412925599', 'rahulmashere33991@gmail.com', '12345', 1, 1);
 
 --
 -- Indexes for dumped tables
@@ -150,7 +175,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `donation_request`
 --
 ALTER TABLE `donation_request`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `feedback`
@@ -162,13 +187,13 @@ ALTER TABLE `feedback`
 -- AUTO_INCREMENT for table `ngo`
 --
 ALTER TABLE `ngo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
