@@ -1,6 +1,6 @@
 <?php
 $list = array();
-   /* session_start();
+   session_start();
 
     // if(empty($_SESSION['user']))
     //     header('location: login.php');
@@ -21,7 +21,7 @@ $list = array();
         for ($i=0; $i < $num; $i++) { 
             $list[$i] = mysqli_fetch_assoc($result);
         }
-    } */
+    }
 ?>
 <!DOCTYPE html>
 
@@ -84,9 +84,11 @@ body {
         <div class="row">
             <div class="panel panel-default" style="padding: 30px;">
                 <div class="row">
-                    <div class="col-md-4"></div>
-                    <div class="col-md-8">
-                        <h3><?php echo $item['name']; ?></h3>
+                    <div class="col-md-10">
+                    <h3><?php echo $ngo['name']; ?></h3>
+                    </div>
+                    <div class="col-md-2">
+                        <a class="btn btn-success" href="edit_request.php?id=<?php echo $ngo['id']; ?>">Donate</a>
                     </div>
                 </div>
                 <div class="row">
@@ -94,6 +96,7 @@ body {
                         <p><?php echo $ngo['description']; ?></p>
                     </div>
                 </div>
+                <?php if(count($list) > 0) {  ?>
                 <div class="row">
                     <div class="col-md-12">
                         <h2>Feed back</h2>
@@ -114,6 +117,7 @@ body {
                         <?php } ?>
                     </div>
                 </div>
+                <?php } ?>
             </div>
         </div>
     </div>

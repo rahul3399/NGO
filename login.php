@@ -6,12 +6,30 @@ require_once 'db.php';
 if (isset($_REQUEST['user']) && isset($_REQUEST['password'])) {
     $user_name = $_REQUEST['user'];
     $password = $_REQUEST['password'];
-    $sql = "CALL checkLogin('$user_name', '$password');";
+    $sql = "SELECT * FROM `users` WHERE user_name = '$user_name' AND password = '$password' ;";
     $result = mysqli_query($conn, $sql);
-    
     if($result->num_rows > 0) {
-        $user = mysqli_fetch_array($result);
-        header("location: index.html");
+        session_start();
+        $user = mysqli_fetch_assoc($result);
+        if(isset($user['admin_for'])){
+            $sql = "SELECT name FROM `ngo` WHERE id = ". $user['admin_for'];
+            $result = mysqli_query($conn, $sql);
+            $ngo = mysqli_fetch_assoc($result);
+            $_SESSION['ngo'] = $ngo['name'];
+            $_SESSION['ngo_id'];
+        }
+        $_SESSION['user'] = $user['name'];
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['admin'] = $user['is_admin'];
+        if($user['is_admin']) {
+            if(isset($_SESSION['ngo'])) {
+                header('location: ngo.php');
+            } else {
+                header('location: ngo.php');
+            }
+        } else {
+            header('location: donar.php');
+        }
     } else {
         $error = "Invalid Username or Password";
     }

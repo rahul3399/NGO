@@ -1,22 +1,34 @@
 <?php
-$list = array();
-   /* session_start();
+    $list = array();
+   session_start();
 
-    // if(empty($_SESSION['user']))
-    //     header('location: login.php');
+   include_once 'db.php';
+
+    if(empty($_SESSION['user']))
+        header('location: login.php');
 
     require_once 'db.php';
-    $ngo_id = $_REQUEST['id'];
-    $sql = "CALL getDonationRequestes($ngo_id);";
-    $result = mysqli_query($conn, $sql);
-    
-    
-    if($result->num_rows > 0) {
-        $num = $result->num_rows;
-        for ($i=0; $i < $num; $i++) { 
-            $list[$i] = mysqli_fetch_assoc($result);
+    $ngo = isset($_REQUEST['id']) ? $_REQUEST['id'] : NULL;
+
+    if(isset($_REQUEST['ngo'])) {
+        $goods = $_REQUEST['goods'];
+        $quantity = $_REQUEST['quantity'];
+        $for = $_REQUEST['for_whom'];
+        $uid = $_SESSION['user_id'];
+        $ngo = $_REQUEST['ngo'];
+        $sql = "INSERT INTO `donation_request`(`id`, `user_id`, `ngo_id`, `goods`, `quantity`, `for_whom`, `status`)".
+        " VALUES (NULL, '$uid', '$ngo' , '$goods','$quantity','$for', 'PENDING');";
+        $result = mysqli_query($conn, $sql);
+        if($result) {
+            header('location: donar.php');
+        } else {
+            $error = "Request Failed";
         }
-    } */
+    }
+
+   
+    
+    
 ?>
 <!DOCTYPE html>
 
@@ -61,7 +73,7 @@ body {
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                             aria-expanded="false">
                             <span class="glyphicon glyphicon-user"></span>&nbsp;Logged
-                            in: <?php //echo $_SESSION['user']; ?>
+                            in: <?php echo $_SESSION['user']; ?>
                             &nbsp;<span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
@@ -87,12 +99,13 @@ body {
                 <div class="panel panel-default">
                     <div class="panel-heading">Login</div>
                     <div class="panel-body">
-                        <form action="login.php" method="post">
+                        <form action="edit_request.php" method="post">
+                        <input type="hidden" name="ngo" value="<?php echo $ngo; ?>">
                             <div class="form-group">
-                                <label for="name">Goods Name</label>
+                                <label for="goods">Goods Name</label>
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="glyphicon glyphicon-gift"></i></span>
-                                    <input type="text" name="name" class="form-control" id="name" required>
+                                    <input type="text" name="goods" class="form-control" id="goods" required>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -111,7 +124,7 @@ body {
                                     <option value="KIDS">Kids</option>
                                 </select>
                             </div>
-                            <input type="submit" class="btn btn-primary" value="Register" />
+                            <input type="submit" class="btn btn-primary" value="Request" />
                             <input type="reset" class="btn btn-default" value="Reset" />
                         </form>
                     </div>

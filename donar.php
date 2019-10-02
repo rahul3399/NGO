@@ -1,14 +1,14 @@
 <?php
 $list = array();
-   /* session_start();
+   session_start();
 
-    // if(empty($_SESSION['user']))
-    //     header('location: login.php');
+    if(empty($_SESSION['user']))
+        header('location: login.php');
 
     require_once 'db.php';
-    $ngo_id = $_SESSION['ngo_id'];
-    $sql = "CALL getDonationRequestes($ngo_id);";
+    $sql = "CALL getNGOList();";
     $result = mysqli_query($conn, $sql);
+    $list = array();
     
     
     if($result->num_rows > 0) {
@@ -16,7 +16,7 @@ $list = array();
         for ($i=0; $i < $num; $i++) { 
             $list[$i] = mysqli_fetch_assoc($result);
         }
-    } */
+    }
 ?>
 <!DOCTYPE html>
 
@@ -77,47 +77,21 @@ body {
 
     <div class="container">
         <div class="row">
-            <div class="col-lg-12 col-md-4">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-4 col-xl-3">
-                            <div class="card bg-c-blue order-card">
-                                <div class="card-block">
-                                    <h4 class="m-b-20">Total Customer</h4>
-                                    <h2 class="text-right"><i class="fa fa-user f-left"></i><span>486</span></h2>
-
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-xl-3">
-                            <div class="card bg-c-pink order-card">
-                                <div class="card-block">
-                                    <h4 class="m-b-20">Total Customer</h4>
-                                    <h2 class="text-right"><i class="fa fa-credit-card f-left"></i><span>486</span></h2>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
             <div class="col-md-10 col-md-offset-1">
-                <?php for($i = 0; $i < 2; $i++) { ?>
+                <?php foreach ($list as $item) { ?>
                 <div class="panel panel-default" style="padding: 30px;">
                     <div class="row">
                         <div class="col-md-4"></div>
                         <div class="col-md-8">
-                            <h3></h3>
+                            <h3><?php echo $item['name'] ?></h3>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <p></p>
+                            <p><?php echo $item['description'] ?></p>
                         </div>
                         <div class="col-md-12">
-                            <a href="#" class="btn btn-primary pull-right">More Info</a>
+                            <a href="ngo_details.php?id=<?php echo $item['id'] ?>" class="btn btn-primary pull-right">More Info</a>
                         </div>
                     </div>
                 </div>

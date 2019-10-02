@@ -3,21 +3,20 @@ session_start();
 session_destroy();
 require_once 'db.php';
 
-if (isset($_REQUEST['user']) && isset($_REQUEST['password'])) {
+if (isset($_REQUEST['name'])) {
     $name = $_REQUEST['name'];
     $user_name = $_REQUEST['email'];
     $contact = $_REQUEST['contact'];
-    $address = $_REQUEST['user'];
+    $address = $_REQUEST['address'];
     $password = $_REQUEST['password'];
-    $sql = "INSERT INTO `users`(`id`, `name`, `adress`, `contact`, `user_name`, `password`, `is_admin`, `admin_for`)".
+    $sql = "INSERT INTO `users`(`id`, `name`, `address`, `contact`, `user_name`, `password`, `is_admin`, `admin_for`)".
     "VALUES (NULL,'$name','$address','$contact','$user_name','$password', 0, NULL);";
     $result = mysqli_query($conn, $sql);
     
-    if($result->num_rows > 0) {
-        $user = mysqli_fetch_array($result);
-        header("location: index.html");
+    if($result) {
+        header("location: login.php");
     } else {
-        $error = "Invalid Username or Password";
+        $error = "Registration Failed";
     }
 }
 ?>
@@ -44,12 +43,12 @@ if (isset($_REQUEST['user']) && isset($_REQUEST['password'])) {
                 <div class="panel panel-default">
                     <div class="panel-heading">Login</div>
                     <div class="panel-body">
-                        <form action="login.php" method="post">
+                        <form action="register_user.php" method="post">
                             <div class="form-group">
                                 <label for="name">Name</label>
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                    <input type="email" name="name" class="form-control" id="name" required>
+                                    <input type="text" name="name" class="form-control" id="name" required>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -63,14 +62,14 @@ if (isset($_REQUEST['user']) && isset($_REQUEST['password'])) {
                                 <label for="contact">Contact</label>
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="glyphicon glyphicon-phone"></i></span>
-                                    <input type="contact" name="contact" class="form-control" id="contact" required>
+                                    <input type="text" name="contact" class="form-control" id="contact" required>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="address">Address</label>
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="glyphicon glyphicon-edit"></i></span>
-                                    <input type="address" name="address" class="form-control" id="address" required>
+                                    <input type="text" name="address" class="form-control" id="address" required>
                                 </div>
                             </div>
                             <div class="form-group">
