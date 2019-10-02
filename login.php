@@ -56,6 +56,9 @@ if (isset($_REQUEST['user']) && isset($_REQUEST['password'])) {
                                 </div>
                             </div>
                             <input type="submit" class="btn btn-success btn-block" value="Login" />
+                            <a href="register_user.php" class="btn btn-danger btn-block">
+                                Register
+                            </a>
                         </form>
                     </div>
                 </div>

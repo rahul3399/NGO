@@ -1,148 +1,128 @@
-<?php /*
-ob_start();
-session_start();
-//require_once 'dbconnect.php';
+<?php
+$list = array();
+   /* session_start();
 
-if (!isset($_SESSION['user'])) {
-    header("Location: login.php");
-  
-}
-// select logged in users detail
-$res = $conn->query("SELECT * FROM donar WHERE id=" . $_SESSION['user']);
-$userRow = mysqli_fetch_array($res, MYSQLI_ASSOC);
+    // if(empty($_SESSION['user']))
+    //     header('location: login.php');
 
-if(isset($_GET['edit'])){
-    $id=$_GET['edit'];
-    $res1 = $conn->query("SELECT * FROM article WHERE id=" . $id );
-    if(count($res1)==1){
-        $row=$res1->fetch_array();
-
-    }
-}
-
-
-
-
-if (isset($_POST['submit'])) {
-
-    $title = trim($_POST['title']); // get posted data and remove whitespace
-    $content = trim($_POST['content']);
-        
-        $stmts = $conn->prepare("INSERT INTO article(title,content,author) VALUES(?, ?, ?)");
-        $stmts->bind_param("sss", $title, $content, $userRow['email']);
-        $res = $stmts->execute();//get result
-        $stmts->close();
-}
-*/
+    require_once 'db.php';
+    $ngo_id = $_REQUEST['id'];
+    $sql = "CALL getDonationRequestes($ngo_id);";
+    $result = mysqli_query($conn, $sql);
+    
+    
+    if($result->num_rows > 0) {
+        $num = $result->num_rows;
+        for ($i=0; $i < $num; $i++) { 
+            $list[$i] = mysqli_fetch_assoc($result);
+        }
+    } */
 ?>
 <!DOCTYPE html>
+
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Hello,<?php echo $userRow['email']; ?></title>
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css" type="text/css"/>
-    <link rel="stylesheet" href="assets/css/index.css" type="text/css"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Hello,<?php //echo $_SESSION['user']; ?></title>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="assets/css/index.css" type="text/css" />
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 </head>
+<style>
+body {
+    margin-top: 20px;
+    background: #FAFAFA;
+}
+</style>
 
 <body>
 
-<!-- Navigation Bar-->
-<nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
                     aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">NGO</a>
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">NGO</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="index.php">Dashboard</a></li>
+                    <li><a href="request.php">Create Request</a></li>
+                    <li><a href="display.php">Notification</a></li>
+                    <li><a href="display.php">Feedback</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                            aria-expanded="false">
+                            <span class="glyphicon glyphicon-user"></span>&nbsp;Logged
+                            in: <?php //echo $_SESSION['user']; ?>
+                            &nbsp;<span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="login.php"><span class="glyphicon glyphicon-log-out"></span>&nbsp;Logout</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="index.php">Dashboard</a></li>
-     
-                <li><a href="display.php">Create Request</a></li>
-                <li><a href="display.php">Notification</a></li>
-                <li><a href="display.php">Feedback</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
+    </nav>
 
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">
-                        <span
-                            class="glyphicon glyphicon-user"></span>&nbsp;Logged
-                        in: <?php echo $userRow['uname']; ?>
-                        &nbsp;<span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="logout.php?logout"><span class="glyphicon glyphicon-log-out"></span>&nbsp;Logout</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-
-
-
-
-<div class="container">
-    <!-- Jumbotron-->
-    <div class="jumbotron">
-        <h4>Hello, <?php echo $userRow['name']; ?></h4>
-    </div>
     <div class="container">
-        <div class="col-md-6">
-        <form>
-
-                <div class="form-group">
-                    <label for="sel1">Select list:</label>
-                    <select class="form-control" id="sel1">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                    </select>
-                </div> 
-
-                <div class="form-group">
-
-                <label for="EmailDemo">Your Email:</label>
-
-                <input type="email" class="form-control" id="EmailDemo" aria-describedby="emailHelp" placeholder="Enter email">
-
-                <small id="emailHelp" class="form-text text-muted">Please enter your primary email, we will send confirmation email!</small>
-
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                <?php if(isset($error)){ ?>
+                <div class="alert alert-danger alert-dismissible">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <?php echo $error; ?>
                 </div>
-
-                <div class="form-group">
-
-                <label for="passDemo">Enter Password:</label>
-
-                <input type="password" class="form-control" id="passDemo" aria-describedby="passHelp" placeholder="Password">
-
-                <small id="passHelp" class="form-text text-muted">Must be 8 characters long</small>
-
+                <?php } ?>
+                <div class="panel panel-default">
+                    <div class="panel-heading">Login</div>
+                    <div class="panel-body">
+                        <form action="login.php" method="post">
+                            <div class="form-group">
+                                <label for="name">Goods Name</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-gift"></i></span>
+                                    <input type="text" name="name" class="form-control" id="name" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="quantity">Quantity</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-shopping-cart"></i></span>
+                                    <input type="number" name="quantity" class="form-control" id="quantity" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="for_whom">Usable For</label>
+                                <select class="form-control" id="for_whom" name="for_whom">
+                                    <option value="ALL">All</option>
+                                    <option value="WOMEN">Women</option>
+                                    <option value="MEN">Men</option>
+                                    <option value="KIDS">Kids</option>
+                                </select>
+                            </div>
+                            <input type="submit" class="btn btn-primary" value="Register" />
+                            <input type="reset" class="btn btn-default" value="Reset" />
+                        </form>
+                    </div>
                 </div>
-
-                <div class="form-check">
-
-                <input type="checkbox" class="form-check-input" id="CheckDemo">
-
-                <label class="form-check-label" for="CheckDemo">Agree with Terms & Conditions?</label>
-
-                </div>
-
-                <button type="submit" class="btn btn-success">Create Account</button>
-
-                </form>    
+            </div>
         </div>
     </div>
-</div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-<script src="assets/js/bootstrap.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+
 </body>
+
 </html>
