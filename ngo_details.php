@@ -125,9 +125,11 @@ body {
                         <h2>Feed back</h2>
                     </div>
                     <div class="col-md-8 col-md-offset-2">
-                        <?php foreach($list as $item) { 
-                            $sql = "SELECT * FROM `users` WHERE id = ". $item['user_id'];
-                             $result = mysqli_query($conn, $sql);
+                        <?php 
+                        include 'db.php';
+                        foreach($list as $item) { 
+                            $sql = "SELECT id, name FROM `users` WHERE id = ". $item['user_id'];
+                            $result = mysqli_query($conn, $sql);
                             $user = mysqli_fetch_assoc($result);     
                             
                         ?>
