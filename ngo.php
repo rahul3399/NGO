@@ -1,11 +1,30 @@
 <?php
 $list = array();
-   /* session_start();
+   session_start();
 
-    // if(empty($_SESSION['user']))
-    //     header('location: login.php');
+    if(empty($_SESSION['user']))
+        header('location: login.php');
 
     require_once 'db.php';
+    if(isset($_REQUEST['s']) && isset($_REQUEST['id'])) {
+        $id = $_REQUEST['id'];
+        if($_REQUEST['s'] == 'a'){
+            $msg = 'Accepted';
+            $sql = "UPDATE `donation_request` SET `status`= 'ACCEPTED' WHERE id = $id;";
+        } else if($_REQUEST['s'] == 'r') {
+            $msg = 'Rejected';
+            $sql = "UPDATE `donation_request` SET `status`= 'REJECTED' WHERE id = $id;";
+        }
+            
+        $result = mysqli_query($conn, $sql);
+
+        if($result)
+            $success = "Donation $msg Successfully";
+
+    }
+
+
+
     $ngo_id = $_SESSION['ngo_id'];
     $sql = "CALL getDonationRequestes($ngo_id);";
     $result = mysqli_query($conn, $sql);
@@ -16,13 +35,13 @@ $list = array();
         for ($i=0; $i < $num; $i++) { 
             $list[$i] = mysqli_fetch_assoc($result);
         }
-    } */
+    }
 ?>
 <!DOCTYPE html>
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Hello,<?php //echo $_SESSION['user']; ?></title>
+    <title>Hello,<?php echo $_SESSION['user']; ?></title>
     <link rel="stylesheet" href="assets/css/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="assets/css/index.css" type="text/css" />
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
@@ -61,7 +80,7 @@ body {
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                             aria-expanded="false">
                             <span class="glyphicon glyphicon-user"></span>&nbsp;Logged
-                            in: <?php //echo $_SESSION['user']; ?>
+                            in: <?php echo $_SESSION['user']; ?>
                             &nbsp;<span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
@@ -76,6 +95,12 @@ body {
     </nav>
 
     <div class="container">
+           <?php if(isset($success)){ ?>
+            <div class="alert alert-sucCess alert-dismissible">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <?php echo $success; ?>
+                </div>
+            <?php } ?>
         <div class="row">
             <div class="col-lg-12 col-md-4">
                 <div class="container">
@@ -118,8 +143,15 @@ body {
                         <td><?php echo $item['name']; ?></td>
                         <td><?php echo $item['goods']; ?></td>
                         <td><?php echo $item['quantity']; ?></td>
-                        <td><?php echo $item['for_whome']; ?></td>
-                        <td><?php echo $item['id']; ?></td>
+                        <td><?php echo $item['for_whom']; ?></td>
+                        <td>
+                        <a class="btn btn-warning" href="ngo.php?s=a&id=<?php echo $item['id']; ?>">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
+                        <a class="btn btn-danger" href="ngo.php?s=r&id=<?php echo $item['id']; ?>">
+                            <span class="glyphicon glyphicon-trash"></span>        
+                        </a>
+                        </td>
                     </tr>
                     <?php } ?>
                 </tbody>

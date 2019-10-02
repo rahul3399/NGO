@@ -12,11 +12,11 @@ if (isset($_REQUEST['user']) && isset($_REQUEST['password'])) {
         session_start();
         $user = mysqli_fetch_assoc($result);
         if(isset($user['admin_for'])){
-            $sql = "SELECT name FROM `ngo` WHERE id = ". $user['admin_for'];
+            $sql = "SELECT name, id FROM `ngo` WHERE id = ". $user['admin_for'];
             $result = mysqli_query($conn, $sql);
             $ngo = mysqli_fetch_assoc($result);
             $_SESSION['ngo'] = $ngo['name'];
-            $_SESSION['ngo_id'];
+            $_SESSION['ngo_id'] = $ngo['id'];
         }
         $_SESSION['user'] = $user['name'];
         $_SESSION['user_id'] = $user['id'];

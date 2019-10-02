@@ -1,27 +1,37 @@
 <?php
 $list = array();
    session_start();
+   require_once 'db.php';
 
-    // if(empty($_SESSION['user']))
-    //     header('location: login.php');
+    if(empty($_SESSION['user']))
+        header('location: login.php');
 
-    require_once 'db.php';
-    $ngo_id = $_REQUEST['id'];
+    if(isset($_REQUEST['description'])) {
+        $des = $_REQUEST['description'];
+        $user = $_SESSION['user_id'];
+        $ngo = $_REQUEST['id'];
+        echo $sql = "INSERT INTO `feedback`(`id`, `description`, `ngo_id`, `user_id`)".
+        " VALUES (NULL,'$des',$ngo,$user);" ;
+         mysqli_query($conn, $sql);
+    } 
+    
+        $ngo_id = $_REQUEST['id']; 
 
-    $sql = "SELECT * FROM `ngo` WHERE id = $ngo_id;" ;
-    $result = mysqli_query($conn, $sql);
-    $ngo = mysqli_fetch_assoc($result);
-
-
-    $sql = "CALL getFeedbacks($ngo_id);";
-    $result = mysqli_query($conn, $sql);
-
-    if($result->num_rows > 0) {
-        $num = $result->num_rows;
-        for ($i=0; $i < $num; $i++) { 
-            $list[$i] = mysqli_fetch_assoc($result);
-        }
-    }
+        $sql = "SELECT * FROM `ngo` WHERE id = $ngo_id;" ;
+        $result = mysqli_query($conn, $sql);
+        $ngo = mysqli_fetch_assoc($result);
+    
+    
+        $sql = "CALL getFeedbacks($ngo_id);";
+        $result = mysqli_query($conn, $sql);
+    
+        if($result->num_rows > 0) {
+            $num = $result->num_rows;
+            for ($i=0; $i < $num; $i++) { 
+                $list[$i] = mysqli_fetch_assoc($result);
+            }
+    } 
+   
 ?>
 <!DOCTYPE html>
 
@@ -85,7 +95,7 @@ body {
             <div class="panel panel-default" style="padding: 30px;">
                 <div class="row">
                     <div class="col-md-10">
-                    <h3><?php echo $ngo['name']; ?></h3>
+                        <h3><?php echo $ngo['name']; ?></h3>
                     </div>
                     <div class="col-md-2">
                         <a class="btn btn-success" href="edit_request.php?id=<?php echo $ngo['id']; ?>">Donate</a>
@@ -96,6 +106,19 @@ body {
                         <p><?php echo $ngo['description']; ?></p>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-3">
+                        <form action="ngo_details.php" method="post">
+                            <input type="hidden" name="id" value="<?php echo $ngo_id;?>">
+                            <div class="form-group">
+                                <label for="description">Write FeedBack</label>
+                                <textarea name="description" class="form-control" id="description" required> </textarea>
+
+                            </div>
+                            <input type="submit" value="Submit" class="btn btn-success">
+                        </form>
+                    </div>
+                </div>
                 <?php if(count($list) > 0) {  ?>
                 <div class="row">
                     <div class="col-md-12">
@@ -103,8 +126,8 @@ body {
                     </div>
                     <div class="col-md-8 col-md-offset-2">
                         <?php foreach($list as $item) { 
-                            $sql = "SELECT name FROM `users` WHERE id = ". $item['user_id'];
-                            $result = mysqli_query($conn, $sql);
+                            $sql = "SELECT * FROM `users` WHERE id = ". $item['user_id'];
+                             $result = mysqli_query($conn, $sql);
                             $user = mysqli_fetch_assoc($result);     
                             
                         ?>
